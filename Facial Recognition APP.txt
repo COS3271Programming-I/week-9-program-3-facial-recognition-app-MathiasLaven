@@ -1,0 +1,104 @@
+package my_project;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
+
+public class MyClass {
+    static Scanner userinput = new Scanner(System.in);
+    public static void main(String[] args) throws FileNotFoundException {
+
+		String fileName = "E:/New Stuff/School Files/12th Grade/Semester 2/Java/Projects/MathiasLaven-Week9Projects/Facial Recognition File.txt";
+		File textFile = new File(fileName);
+		Scanner fileInput = new Scanner(textFile);
+		
+		String line;
+		String[] splitLine;
+		double[][] ratioData = new double[5][15];
+		String[] nameData = new String[5];
+		
+		String personName = "";
+		double A = 0;
+		double B = 0;
+		double C = 0;
+		double D = 0;
+		double E = 0;
+		double F = 0;
+		
+		int lineNum = 0;
+		
+		while (fileInput.hasNextLine()) {
+			line = fileInput.nextLine();
+			splitLine = line.split(" ");
+			
+			personName = splitLine[0];
+			A = Double.parseDouble(splitLine[1]);
+			B = Double.parseDouble(splitLine[2]);
+			C = Double.parseDouble(splitLine[3]);
+			D = Double.parseDouble(splitLine[4]);
+			E = Double.parseDouble(splitLine[5]);
+			F = Double.parseDouble(splitLine[6]);
+			
+			double[] lineData = {A/B, A/C, A/D, A/E, A/F, B/C, B/D, B/E, B/F, C/D, C/E, C/F, D/E, D/F, E/F};
+			
+			ratioData[lineNum] = lineData;
+			nameData[lineNum] = personName;
+			lineNum++;
+			
+		}
+		
+    	System.out.println("You will be asked to make six measurements regarding your image. Please measure each in millimeters.");
+    	System.out.println("");
+    	
+    	System.out.print("Distance from top of head to bottom of chin: \n>>");
+    	double userA = userinput.nextDouble();
+    	System.out.print("Distance from left ear to right ear: \n>>");
+    	double userB = userinput.nextDouble();
+    	System.out.print("Distance from center point between the eyes and top of head: \n>>");
+    	double userC = userinput.nextDouble();
+    	System.out.print("Distance from center of left eye to center of right eye: \n>>");
+    	double userD = userinput.nextDouble();
+    	System.out.print("Length of nose from top to bottom: \n>>");
+    	double userE = userinput.nextDouble();
+    	System.out.print("Distance from bottom of chin to middle of mouth: \n>>");
+    	double userF = userinput.nextDouble();
+    	
+    	System.out.println("");
+    	
+		double[] userData = {userA/userB, userA/userC, userA/userD, userA/userE, userA/userF, userB/userC, userB/userD, userB/userE, userB/userF, userC/userD, userC/userE, userC/userF, userD/userE, userD/userF, userE/userF};
+		
+		double lowestSumOfSquares = 0;
+		String lowestName = "";
+		
+		boolean firstLoop = true;
+		double sumEntry = 0;
+		
+		for (int i = 0; i < ratioData.length; i++) {
+			
+			double[] currentData = ratioData[i];
+			
+			for (int j = 1; j < currentData.length; j++) {
+				
+				sumEntry += ((userData[j] - currentData[j]) / currentData[j]) * ((userData[j] - currentData[j]) / currentData[j]);
+				
+				//debug info
+		    	//System.out.println(i + " " + j + " " + sumEntry);
+				
+			}
+			
+			if (firstLoop || sumEntry < lowestSumOfSquares) {
+				lowestSumOfSquares = sumEntry;
+				lowestName = nameData[i];
+				
+				firstLoop = false;
+			}
+			
+			sumEntry = 0;
+
+		}
+		
+    	System.out.format("According to my calculations, your mystery person is %s! \n", lowestName);
+		
+		fileInput.close();
+		
+	}
+}
